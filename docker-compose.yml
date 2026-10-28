@@ -1,0 +1,67 @@
+name: attmdt-lab01
+
+services:
+  redis:
+    image: redis:7.4-alpine
+    user: redis
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?chạy python3 scripts/gen_env.py để tạo .env}
+    # Mật khẩu đi vào file ACL bằng printf (builtin của shell), không nằm trên dòng lệnh của redis-server.
+    command:
+      - sh
+      - -c
+      - umask 077 && printf 'user default on >%s ~* &* +@all\n' "$$REDIS_PASSWORD" > /tmp/users.acl && exec redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$$REDIS_PASSWORD\" redis-cli ping | grep -q PONG"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+    # Không publish port: Redis chỉ truy cập được trong mạng của compose.
+
+  app:
+    build:
+      context: .
+      target: app
+    env_file: .env
+    environment:
+      REDIS_HOST: redis
+      DB_PATH: /data/lab01.db
+      AUDIT_LOG_PATH: /app/logs/audit.log
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - audit-logs:/app/logs
+    depends_on:
+      redis:
+        condition: service_healthy
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  tests:
+    profiles: ["test"]
+    build:
+      context: .
+      target: tests
+    env_file: .env
+    environment:
+      BASE_URL: http://app:8000
+      REDIS_HOST: redis
+      AUDIT_LOG: /logs/audit.log
+      EVIDENCE_DIR: /evidence
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    volumes:
+      - audit-logs:/logs:ro
+      - ./evidence:/evidence
+    depends_on:
+      app:
+        condition: service_healthy
+
+volumes:
+  audit-logs:

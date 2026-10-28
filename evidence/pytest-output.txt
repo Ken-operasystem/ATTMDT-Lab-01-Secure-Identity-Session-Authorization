@@ -1,0 +1,47 @@
+ Container attmdt-lab01-redis-1 Running 
+ Container attmdt-lab01-app-1 Running 
+ Container attmdt-lab01-redis-1 Waiting 
+ Container attmdt-lab01-redis-1 Healthy 
+ Container attmdt-lab01-app-1 Waiting 
+ Container attmdt-lab01-app-1 Healthy 
+ Container attmdt-lab01-tests-run-f744d1c42b99 Creating 
+ Container attmdt-lab01-tests-run-f744d1c42b99 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytest-8.3.3, pluggy-1.7.0 -- /usr/local/bin/python3.12
+rootdir: /app
+plugins: anyio-4.15.1
+collecting ... collected 31 items
+
+tests/test_lab01_controls.py::test_t1_totp_valid PASSED                  [  3%]
+tests/test_lab01_controls.py::test_t2_replay_otp PASSED                  [  6%]
+tests/test_lab01_controls.py::test_t3_wrong_or_expired_otp PASSED        [  9%]
+tests/test_lab01_controls.py::test_t4_session_fixation PASSED            [ 12%]
+tests/test_lab01_controls.py::test_t5_rbac_bypass PASSED                 [ 16%]
+tests/test_lab01_controls.py::test_t6_valid_flow PASSED                  [ 19%]
+tests/test_lab01_controls.py::test_t7_log_masking PASSED                 [ 22%]
+tests/test_lab01_controls.py::test_t8_session_revocation PASSED          [ 25%]
+tests/test_lab01_controls.py::test_t9_session_timeouts PASSED            [ 29%]
+tests/test_lab01_controls.py::test_t7b_full_audit_log_scan PASSED        [ 32%]
+tests/test_masking.py::test_mask_pan_keeps_last4 PASSED                  [ 35%]
+tests/test_masking.py::test_short_numbers_untouched PASSED               [ 38%]
+tests/test_masking.py::test_scrub_redacts_sensitive_keys_recursively PASSED [ 41%]
+tests/test_totp_rfc6238.py::test_rfc6238_sha1_vectors[59-94287082] PASSED [ 45%]
+tests/test_totp_rfc6238.py::test_rfc6238_sha1_vectors[1111111109-07081804] PASSED [ 48%]
+tests/test_totp_rfc6238.py::test_rfc6238_sha1_vectors[1111111111-14050471] PASSED [ 51%]
+tests/test_totp_rfc6238.py::test_rfc6238_sha1_vectors[1234567890-89005924] PASSED [ 54%]
+tests/test_totp_rfc6238.py::test_rfc6238_sha1_vectors[2000000000-69279037] PASSED [ 58%]
+tests/test_totp_rfc6238.py::test_rfc6238_sha1_vectors[20000000000-65353130] PASSED [ 61%]
+tests/test_totp_rfc6238.py::test_accepts_clock_drift_of_one_step[-1] PASSED [ 64%]
+tests/test_totp_rfc6238.py::test_accepts_clock_drift_of_one_step[0] PASSED [ 67%]
+tests/test_totp_rfc6238.py::test_accepts_clock_drift_of_one_step[1] PASSED [ 70%]
+tests/test_totp_rfc6238.py::test_rejects_codes_outside_window[-3] PASSED [ 74%]
+tests/test_totp_rfc6238.py::test_rejects_codes_outside_window[-2] PASSED [ 77%]
+tests/test_totp_rfc6238.py::test_rejects_codes_outside_window[2] PASSED  [ 80%]
+tests/test_totp_rfc6238.py::test_rejects_codes_outside_window[3] PASSED  [ 83%]
+tests/test_totp_rfc6238.py::test_rejects_malformed_codes[] PASSED        [ 87%]
+tests/test_totp_rfc6238.py::test_rejects_malformed_codes[12345] PASSED   [ 90%]
+tests/test_totp_rfc6238.py::test_rejects_malformed_codes[1234567] PASSED [ 93%]
+tests/test_totp_rfc6238.py::test_rejects_malformed_codes[12345a] PASSED  [ 96%]
+tests/test_totp_rfc6238.py::test_rejects_malformed_codes[\uff11\uff12\uff13\uff14\uff15\uff16] PASSED [100%]
+
+============================= 31 passed in 45.15s ==============================
